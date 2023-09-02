@@ -1,35 +1,44 @@
-import clientPromise from "@/lib/mongodb";
 import { mongooseConnect } from "@/lib/mongoose";
-import { Admin } from "@/models/Admin";
-import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
+import { User } from "@/models/user";
 import NextAuth, { getServerSession } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
 
-const isAdminEmail = async (email) => {
-  //return true
-  mongooseConnect();
-  return !!(await Admin.findOne({ email }));
+const isAdminEmails = async (email) => {
+  return !!(await User.findOne({ email }));
 };
 
 export const authOptions = {
-  secret : process.env.SECRET,
   providers: [
-    // OAuth authentication providers...
-    GoogleProvider({
-      clientId: process.env.GOOGLE_ID,
-      clientSecret: process.env.GOOGLE_SECRET,
+    CredentialsProvider({
+      name: "credentials",
+      credentials: {},
+      async authorize(credentials) {
+        const { userName, password } = credentials;
+
+        try {
+          await mongooseConnect();
+          const user = await User.findOne({ userName });
+          if (!user) {
+            return null;
+          }
+          const passwordMatch = await bcrypt.compare(password, user.password);
+          if (!passwordMatch) {
+            return null;
+          }
+          return user;
+        } catch (error) {
+          console.log(error);
+        }
+      },
     }),
   ],
-  adapter: MongoDBAdapter(clientPromise),
-  callbacks: {
-    session: async ({ session, token, user }) => {
-      
-      if (await isAdminEmail(session?.user?.email)) {
-        return session;
-      } else {
-        return false;
-      }
-    },
+  session: {
+    strategy: "jwt",
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: "/",
   },
 };
 
@@ -38,9 +47,9 @@ export default NextAuth(authOptions);
 export const isAdminRequest = async (req, res) => {
   const session = await getServerSession(req, res, authOptions);
 
-  if (!(await isAdminEmail(session?.user?.email))) {
+  if (!(await isAdminEmails(session?.user?.email))) {
     res.status(401);
     res.end();
-    throw "not an admin";
+    throw "Not an admin";
   }
 };
