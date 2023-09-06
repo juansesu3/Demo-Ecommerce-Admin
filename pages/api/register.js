@@ -1,7 +1,7 @@
 import { mongooseConnect } from "@/lib/mongoose";
 import { User } from "@/models/user";
 import bcrypt from "bcryptjs";
-import { isAdminRequest } from "./auth/[...nextauth]";
+
 
 const handle = async (req, res) => {
   await mongooseConnect();
@@ -17,11 +17,11 @@ const handle = async (req, res) => {
   }
 
   if (method === "POST") {
-    const { userName, email, password, image } = req.body;
+    const { name, email, password, image } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     console.log(req.body);
     const userDoc = await User.create({
-      userName,
+      name,
       email,
       password: hashedPassword,
       image,

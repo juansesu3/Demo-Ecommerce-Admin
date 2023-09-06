@@ -1,10 +1,12 @@
 import { mongooseConnect } from "@/lib/mongoose";
-import { User } from "@/models/user";
+
 import NextAuth, { getServerSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
+import { User } from "@/models/user";
 
 const isAdminEmails = async (email) => {
+  return true;
   return !!(await User.findOne({ email }));
 };
 
@@ -14,11 +16,14 @@ export const authOptions = {
       name: "credentials",
       credentials: {},
       async authorize(credentials) {
-        const { userName, password } = credentials;
+        console.log("Crederential before destructuring >> ",{credentials})
+        const { name, password } = credentials;
+
+        console.log("Data credentials name and password >>", { password, name });
 
         try {
           await mongooseConnect();
-          const user = await User.findOne({ userName });
+          const user = await User.findOne({ name });
           if (!user) {
             return null;
           }

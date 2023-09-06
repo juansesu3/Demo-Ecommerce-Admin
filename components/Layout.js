@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 export default function Layout({ children }) {
   const [showNav, setShowNav] = useState();
   const { data: session } = useSession();
-  const [userName, setUserName] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
   const router = useRouter();
@@ -17,7 +17,7 @@ export default function Layout({ children }) {
     try {
       const result = await signIn("credentials", {
         redirect: false,
-        userName,
+        name,
         password,
       });
 
@@ -54,8 +54,8 @@ export default function Layout({ children }) {
             <input
               className="shadow-md"
               type="text"
-              value={userName}
-              onChange={(ev) => setUserName(ev.target.value)}
+              value={name}
+              onChange={(ev) => setName(ev.target.value)}
               placeholder="user-name here"
             />
             <input
