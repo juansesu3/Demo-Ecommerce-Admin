@@ -8,6 +8,14 @@ const HomeHeader = () => {
       <div className="flex w-full gap-2 items-center justify-between ">
         <div>
           Hello, <b>{session?.user?.email}</b>
+          <div className=" mt-2">
+            <a
+              className="border py-1 px-2 bg-primary hover:bg-purple-600 text-white "
+              href="https://e-commerce-front-tan.vercel.app/"
+            >
+              Go My Store
+            </a>
+          </div>
         </div>
         <div className="w-6 h-6">
           <img
