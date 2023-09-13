@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/react";
 
-const HomeHeader = () => { 
+const HomeHeader = () => {
   const { data: session } = useSession();
   console.log(session);
   return (
@@ -11,7 +11,8 @@ const HomeHeader = () => {
           <div className=" mt-2">
             <a
               className="border py-1 px-2 bg-primary hover:bg-purple-600 text-white "
-              href="https://e-commerce-front-tan.vercel.app/"
+              href="https://demo-ecommerce-client.vercel.app/"
+              target="_blank"
             >
               Go My Store
             </a>
