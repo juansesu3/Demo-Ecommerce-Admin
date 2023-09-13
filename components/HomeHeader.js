@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/react";
 
-const HomeHeader = () => {
+const HomeHeader = () => { 
   const { data: session } = useSession();
   console.log(session);
   return (
