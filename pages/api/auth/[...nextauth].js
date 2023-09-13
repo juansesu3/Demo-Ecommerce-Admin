@@ -3,11 +3,11 @@ import { mongooseConnect } from "@/lib/mongoose";
 import NextAuth, { getServerSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import { User } from "../../../models/User";
+import { User } from "@/models/user";
 
 const isAdminEmails = async (email) => {
   return !!(await User.findOne({ email }));
-};ver
+};
 
 export const authOptions = {
   providers: [
